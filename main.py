@@ -24,6 +24,7 @@ def VisionScript(indir):
 	total = len(files)
 	output_text = ""
 	f = open('output.txt', 'w', encoding='utf-8')
+	f2 = open('output_old.txt', 'w', encoding='utf-8')
 
 	for image in files:
 		i = i+1
@@ -38,12 +39,20 @@ def VisionScript(indir):
 		response = client.document_text_detection(image=image)
 		document = response.full_text_annotation
 		
-		output_text = document.text + "\n\n\n"
+		original_output = document.text
+		
+		new_output = original_output.replace("\r", "")
+		new_output = new_output.replace("\n", " ")
+		output_text = new_output + "\n\n"
+		output_text_lb = original_output + "\n\n"
+
 		f.write(output_text)
+		f2.write(output_text_lb)
 			
 		print("... done!")
 	
 	f.close()
+	f2.close()
 	print("\nAll images processed. Output saved to output.txt\n")
 
 if __name__ == "__main__":

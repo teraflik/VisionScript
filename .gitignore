@@ -1,3 +1,5 @@
 .vscode
 env/
 images/
+output.txt
+output_old.txt
