@@ -85,3 +85,4 @@ def VisionScript(indir):
 
 if __name__ == "__main__":
 	VisionScript('images/')
+	input("Press Enter to continue...\n") 
