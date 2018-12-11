@@ -16,7 +16,7 @@ Install these prerequisites:
 Open PowerShell or Bash and type:
 ```
 $ cd VisionScript
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 ```
 ## Step 3. Set up your Google Cloud API Key:
 On Windows go to Environment Variables and add a new key. Set Variable Name to `GOOGLE_APPLICATION_CREDENTIALS` and Variable Value to the path where the your access key is stored.
