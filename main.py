@@ -5,6 +5,10 @@ import os
 from google.cloud import vision
 from google.cloud.vision import types
 
+from docx import Document
+from docx.shared import Inches, Pt, Cm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+
 def VisionScript(indir):
 	# Instantiates a client
 	client = vision.ImageAnnotatorClient()
@@ -12,7 +16,7 @@ def VisionScript(indir):
 	folders = []
 	files = []
 	
-	print("\nReading Directory \'images\\\'... ", end="")
+	print("\nReading Directory images\\ ... ", end="")
 	for entry in os.scandir(indir):
 		if entry.is_dir():
 			folders.append(entry.path)
@@ -22,9 +26,27 @@ def VisionScript(indir):
 	
 	i = 0
 	total = len(files)
-	output_text = ""
-	f = open('output.txt', 'w', encoding='utf-8')
-	f2 = open('output_old.txt', 'w', encoding='utf-8')
+	#output_txt = ""
+	#f = open('output_old.txt', 'w', encoding='utf-8')
+
+	#Preparing docx file with formatting and margins.
+	document = Document()
+	section = document.sections[0]
+	section.left_margin, section.right_margin = (Cm(1.27), Cm(1.27))
+	section.top_margin, section.bottom_margin = (Cm(1.27), Cm(1.27))
+	section.gutter = 0
+
+	style = document.styles['Normal']
+	font = style.font
+	font.name = 'Kokila'
+	font.size = Pt(18)
+	
+	document2 = Document()
+
+	style2 = document2.styles['Normal']
+	font = style2.font
+	font.name = 'Kokila'
+	font.size = Pt(18)
 
 	for image in files:
 		i = i+1
@@ -37,24 +59,29 @@ def VisionScript(indir):
 		image = types.Image(content=content)
 		
 		response = client.document_text_detection(image=image)
-		document = response.full_text_annotation
+		original_output = response.full_text_annotation.text
 		
-		original_output = document.text
-		
+		#Replace newline characters with space
 		new_output = original_output.replace("\r", "")
 		new_output = new_output.replace("\n", " ")
-		output_text = new_output + "\n\n"
-		output_text_lb = original_output + "\n\n"
 
-		f.write(output_text)
-		f2.write(output_text_lb)
-			
+		#generate output for both type of files
+		#output_txt = original_output + "\n\n"
+		#f.write(output_txt)
+
+		paragraph = document.add_paragraph(new_output + "\n\n")
+		paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+		paragraph.style = document.styles['Normal']
+
+		paragraph2 = document2.add_paragraph(original_output + "\n\n")
+		paragraph2.style = document2.styles['Normal']
+		
 		print("... done!")
 	
-	f.close()
-	f2.close()
-	print("\nAll images processed. Output saved to output.txt\n")
+	document.save('Word.docx')
+	document2.save('Word_old.docx')
+	#f.close()
+	print("\nAll images processed. Output saved to Word.docx, Word_old.docx\n")
 
 if __name__ == "__main__":
 	VisionScript('images/')
-	input("Press Enter to continue...\n")
