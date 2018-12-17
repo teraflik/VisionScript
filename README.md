@@ -10,7 +10,7 @@ Install these prerequisites:
 - Google Cloud Vision API Access: https://cloud.google.com/vision/
 
 ## Step 1. Clone the project or download ZIP
-`git clone https://github.com/dappuniversity/election`
+`git clone https://github.com/teraflik/VisionScript.git`
 
 ## Step 2. Install dependencies
 Open PowerShell or Bash and type:
